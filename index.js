@@ -1,8 +1,9 @@
-var express = require('express');
+
+"use strict";
+
 var app = require('http').createServer(handler);
 var io = require('socket.io')(app);
 var config = require('cloud-env')
-
 var fs = require('fs')
 
 

@@ -28,5 +28,14 @@ console.log('Request Recieved');
 });
 
 
-var server = app.listen(port,ip,function(){});
+var server = app.listen(port,ip,function(){
+
+io.on("connection",function(socket){
+console.log("Di");
+
+});
+
+
+
+});
 

@@ -1,13 +1,13 @@
-var app = require('http').createServer(handler)
+var app = require('http').createServer(handler);
 var io = require('socket.io')(app);
 var fs = require('fs');
 
 
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+
 var ip = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
 app.listen(port,ip);
-
 function handler (req, res) {
 
   fs.readFile(__dirname + '/htmls/connect.html',

@@ -1,8 +1,16 @@
-{"name":"Locatae","version ":"0.0.1","description" : "A location based app",
-"dependencies":{"socket.io":"latest","express":"latest","mysql":"latest"},"author":"raj krishnan r","scripts": {
-  "start": "node index.js"
-},
-"main": "index.js"}
-
-
-
+{
+  "name": "Locatae",
+  "version ": "0.0.1",
+  "description": "A location based app",
+  "dependencies": {
+    "cloud-env": "^0.2.2",
+    "express": "latest",
+    "mysql": "latest",
+    "socket.io": "latest"
+  },
+  "author": "raj krishnan r",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "main": "index.js"
+}

@@ -4,12 +4,6 @@ var io = require('socket.io')(http);
 var config = require('cloud-env')
 
 
-
-
-var server_port = config.PORT || 8080;
-var server_ip_address = config.IP || '127.0.0.1';
-
-
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080  
 , ip = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 
@@ -26,7 +20,6 @@ console.log('Request Recieved');
    res.sendFile(__dirname + '/htmls/connect.html');
 
 });
-
 
 var server = app.listen(port,ip,function(){});
 io.listen(server);

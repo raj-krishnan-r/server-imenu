@@ -29,4 +29,17 @@ console.log('Request Recieved');
 
 
 var server = app.listen(port,ip,function(){});
+io.listen(server);
+
+io.on('connection', function(socket){
+  
+socket.on('Data',function(msg)
+{
+io.emit('retrn',msg);
+
+});
+
+console.log('a user connected');
+});
+
 

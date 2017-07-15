@@ -1,49 +1,30 @@
-var express = require('express');
-var http = require('http');
-var io = require('socket.io')(http);
-var config = require('cloud-env')
+var app = require('http').createServer(handler)
+var io = require('socket.io')(app);
+var fs = require('fs');
 
 
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var ip = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
+app.listen(port,ip);
 
-var server_port = config.PORT || 8080;
-var server_ip_address = config.IP || '127.0.0.1';
+function handler (req, res) {
 
+  fs.readFile(__dirname + '/htmls/connect.html',
+  function (err, data) {
+    if (err) {
+      res.writeHead(500);
+      return res.end('Error loading index.html');
+    }
 
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080  
-, ip = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+    res.writeHead(200);
+    res.end(data);
+  });
+}
 
-var app = express();
-
-
-app.get('/',function(req,res)
-{
-
-
-
-console.log('Request Recieved');
-
-   res.sendFile(__dirname + '/htmls/connect.html');
-
-
-
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
 });
-
-io.on('connection',function(socket){
-socket.on('Data',function(msg)
-{
-io.emit('retrn',msg);
-});
-
-
-});
-
-app.listen(port,ip,function(){
-
-console.log('Server up and running @ '+port+':'+ip);
-
-
-});
-
-
-

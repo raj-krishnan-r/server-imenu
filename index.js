@@ -4,7 +4,7 @@ var fs = require('fs');
 
 
 
-var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+var port = process.env.OPENSHIFT_NODEJS_PORT || 3001;
 
 var ip = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
@@ -24,7 +24,7 @@ function handler (req, res) {
 }
 
 io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
+  io.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
   });

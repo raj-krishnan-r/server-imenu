@@ -1,6 +1,6 @@
 var express = require('express');
-var http = require('http').createServer(handler);
-var io = require('socket.io')(http);
+var app = require('http').createServer(handler);
+var io = require('socket.io')(app);
 var config = require('cloud-env')
 
 var fs = require('fs')
@@ -12,11 +12,8 @@ var fs = require('fs')
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080  
 , ip = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 
-var app = express();
 
-
-
-http.listen(port,ip,function()
+app.listen(port,ip,function()
         {console.log('Server up at port '+port+' and over IP http://'+ip+':'+port);}
                 );
 

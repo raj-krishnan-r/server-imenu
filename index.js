@@ -1,49 +1,32 @@
-
-"use strict";
-
-var app = require('http').createServer(handler);
-var io = require('socket.io')(app);
+var express = require('express');
+var http = require('http');
+var io = require('socket.io')(http);
 var config = require('cloud-env')
-var fs = require('fs')
 
 
 
+
+var server_port = config.PORT || 8080;
+var server_ip_address = config.IP || '127.0.0.1';
 
 
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080  
 , ip = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 
-
-app.listen(port,ip,function()
-        {console.log('Server up at port '+port+' and over IP http://'+ip+':'+port);}
-                );
-
-/*
-io.on('connection',function(socket){
+var app = express();
 
 
-console.log("A client is connected.");
+console.log('Server up and running @ '+port+':'+ip);
 
-});
-*/
-
-function handler(req,res)
+app.get('/',function(req,res)
 {
 
-var forwardFile=__dirname+'/htmls/connect.html';
-fs.readFile(forwardFile,function(err,data)
-{
-if(err){
-res.writeHead(404);
-return res.end('Request page is not found.');
-}
-res.writeHead(200,{'Content-Type':'text/html'});
-res.end(data);
+console.log('Request Recieved');
+
+   res.sendFile(__dirname + '/htmls/connect.html');
+
 });
-}
 
 
-
-
-
+var server = app.listen(port,ip,function(){});
 

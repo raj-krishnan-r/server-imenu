@@ -21,8 +21,7 @@ console.log('Request Recieved');
 
 });
 
-var server = app.listen(port,ip,function(){});
-io.listen(server);
+
 
 io.on('connection', function(socket){
   
@@ -35,4 +34,5 @@ io.emit('retrn',msg);
 console.log('a user connected');
 });
 
-
+var server = app.listen(port,ip,function(){});
+io.listen(server);

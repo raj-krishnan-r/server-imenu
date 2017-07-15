@@ -28,5 +28,5 @@ console.log('Request Recieved');
 });
 
 
-var server = app.listen(port,function(){});
+var server = app.listen(port,ip,function(){});
 

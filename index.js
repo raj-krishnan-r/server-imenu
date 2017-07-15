@@ -32,6 +32,11 @@ var server = app.listen(port,ip,function(){
 
 io.on("connection",function(socket){
 console.log("Di");
+socket.on("Data",function(msg){
+io.emit("retrn",msg);
+
+});
+
 
 });
 

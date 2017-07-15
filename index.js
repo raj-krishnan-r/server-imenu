@@ -29,8 +29,13 @@ console.log('Request Recieved');
 
 });
 
-io.on("connection",function(socket){
-console.log("Hamsangal");
+io.on('connection',function(socket){
+socket.on('Data',function(msg)
+{
+io.emit('retrn',msg);
+});
+
+
 });
 
 app.listen(port,ip,function(){

@@ -1,19 +1,8 @@
-{
+{"name":"Locatae","version ":"0.0.1","description" : "A location based app",
+"dependencies":{"socket.io":"latest","express":"latest","mysql":"latest"},"author":"raj krishnan r","scripts": {
+  "start": "node index.js"
+},
+"main": "index.js"}
 
-  "name": "locat",
-  "version": "0.0.1",
-  "description": "Center of Locat",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "Locat"
-  ],
-  "author": "rare",
-  "license": "GPL-3.0",
-  "dependencies": {
-    "express": "^4.15.2"
-  }
 
-}
+

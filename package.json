@@ -1,4 +1,5 @@
 {
+
   "name": "locat",
   "version": "0.0.1",
   "description": "Center of Locat",
@@ -14,4 +15,5 @@
   "dependencies": {
     "express": "^4.15.2"
   }
+
 }

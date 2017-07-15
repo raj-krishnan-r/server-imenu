@@ -18,18 +18,14 @@ app.listen(port,ip,function()
         {console.log('Server up at port '+port+' and over IP http://'+ip+':'+port);}
                 );
 
-
+/*
 io.on('connection',function(socket){
 
 
 console.log("A client is connected.");
 
 });
-
-
-
-
-
+*/
 
 function handler(req,res)
 {

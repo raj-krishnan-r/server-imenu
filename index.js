@@ -16,31 +16,29 @@ var port = process.env.OPENSHIFT_NODEJS_PORT || 8080
 var app = express();
 
 
-console.log('Server up and running @ '+port+':'+ip);
-
 app.get('/',function(req,res)
 {
+
+
 
 console.log('Request Recieved');
 
    res.sendFile(__dirname + '/htmls/connect.html');
 
+
+
 });
-
-
-var server = app.listen(port,ip,function(){
 
 io.on("connection",function(socket){
-console.log("Di");
-socket.on("Data",function(msg){
-io.emit("retrn",msg);
+console.log("Hamsangal");
+});
+
+app.listen(port,ip,function(){
+
+console.log('Server up and running @ '+port+':'+ip);
+
 
 });
 
 
-});
-
-
-
-});
 

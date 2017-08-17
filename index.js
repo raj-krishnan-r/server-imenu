@@ -31,7 +31,7 @@ res.end(svg_string);
 app.get('/listings',function(req,res){
 console.log("Serving menu ...");
 res.writeHead(200,{'Content-type':'text/json'});
-res.end('["Mango Juice","Milk Shake","Chicken Biriyani","Black Tea","Fruit Salad","Blueberry Shake","Avagado Shake"]');
+res.end('["Mango Juice","Milk Shake","Chicken Biriyani","Black Tea","Fruit Salad","Blueberry Shake","Avagado Shake","Muthira"]');
 });
 
 io.on('connection', function (socket) {

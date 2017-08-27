@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head><title>
+i-Menu : Main Interface
+</title>
+  <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body
+  {
+    font-family: 'Segoe UI Light', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  h1
+  {
+    text-align: center;
+  }
+  .navigationBar
+  {
+    margin: 1vw;
+    padding: 1vh;
+    background-color: cornflowerblue;
+  }
+  .orderBucket .order
+  {
+    padding: 3vh;
+    margin: 1vh;
+    background-color: steelblue;
+    border-radius: 1vh;
+      }
+      .orderBucket .order .statusSlot
+      {
+        position: relative;
+        right: 0;
+        top: 0;
+      }
+  </style>
+
+</head>
+<body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io('http://localhost:3000');
+  socket.on('orderAck', function (data) {
+    fillList(data);
+  });
+
+function fillList(datum)
+{
+  var decoded = JSON.parse(datum);
+
+	var bucket = document.getElementById('orderBucket');
+	var tempDiv = document.createElement('div');
+  var tempStatus = document.createElement('span');
+  tempStatus.setAttribute("class","statusSlot");
+  var selectStatus = document.createElement('select');
+  selectStatus.setAttribute('id',decoded.tableid+'-status'+decoded.itemid);
+  selectStatus.setAttribute('data-orderid',decoded.orderid);
+    selectStatus.setAttribute('data-tableid',decoded.tableid);
+    selectStatus.setAttribute('data-itemid',decoded.itemid);
+    selectStatus.setAttribute('data-itemcount',decoded.count);
+
+  selectStatus.setAttribute("class","status");
+selectStatus.setAttribute("onChange","selectSelect(this)");
+  selectStatus.innerHTML='<option value="null">Select Status</option><option value="now">Now</option><option value="5min">Prepared in 5 minutes</option><option value="10min">Prepared in 10 minutes</option><option value="nill">Order cannot be handled</option>';
+	tempStatus.appendChild(selectStatus);
+tempStatus.appendChild(selectStatus);
+  tempDiv.setAttribute("class","order");
+  tempDiv.innerHTML=decoded.itemname;
+    tempDiv.appendChild(tempStatus);
+
+  bucket.appendChild(tempDiv);
+	
+}
+function selectSelect(ib)
+{
+    var jsonformat = '{ "orderid":"'+ib.dataset.orderid+'","status":"'+ib.value+'","tableId":"'+ib.dataset.tableid+'","itemid":"'+ib.dataset.itemid+'","itemcount":"'+ib.dataset.itemcount+'" }';
+    socket.emit("ackOrder",jsonformat);
+
+}
+</script>
+
+
+<h1>i-Menu</h1>
+
+<div class="navigationBar"><span>Order</span></div>
+<div id = "orderBucket" class="orderBucket">
+
+</div>
+
+</body>
+</html>

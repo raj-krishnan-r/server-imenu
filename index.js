@@ -64,7 +64,9 @@ res.end(svg_string);
 app.get('/listings',function(req,res){
 console.log("Serving menu ...");
 res.writeHead(200,{'Content-type':'text/json'});
+
 res.end('[{"name":"Mango Juice","price":"15","itemid":"01","shortdescription":"Some stuffs about this."},{"name":"Oreo Shake","price":"40","itemid":"02","shortdescription":"Some stuffs about this."},{"name":"Avacado Shake","price":"55","itemid":"03","shortdescription":"Some stuffs about this."},{"name":"Blueberry Shake","price":"80","itemid":"05","shortdescription":"Some stuffs about this."},{"name":"Apple Juice","price":"25","itemid":"06","shortdescription":"Some stuffs about this."},{"name":"Orange Juice","price":"25","itemid":"07","shortdescription":"Some stuffs about this."}]');
+
 });
 
 io.on('connection', function (socket) {

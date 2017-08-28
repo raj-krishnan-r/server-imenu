@@ -26,9 +26,17 @@ this.orderid=orderid;
 var users = new Array();
 
 
+//Items 
+var dummy = '[{"categorytitle": "Juices","items": [{"name": "Mango Juice","price": "15","itemid": "01","shortdescription": "Some stuffs about this."}, {"name": "Oreo Shake","price": "40","itemid": "02","shortdescription": "Some stuffs about this."}, {		"name": "Avacado Shake","price":"55","itemid": "03","shortdescription": "Some stuffs about this."}, {	"name": "Blueberry Shake","price": "80","itemid": "05","shortdescription": "Some stuffs about this."}, {"name": "Apple Juice","price": "25","itemid": "06","shortdescription": "Some stuffs about this."}, {"name": "Orange Juice","price": "25","itemid":"07","shortdescription": "Some stuffs about this."}]},{"categorytitle":"Meals","items":[{	"name": "Chicken Biriyani","price": "45","itemid": "079","shortdescription": "Delicious!"}]},{"categorytitle":"Desserts","items":[{"name": "Apple Pie","price": "40","itemid": "95","shortdescription": "Delicious!"},{"name": "Baked Alaska","price": "45","itemid": "495","shortdescription": "Ice-cream and cake topped with browned meringue."},{"name": "German Chocolate Cake","price": "40","itemid": "935","shortdescription": "A layered cake filled and topped with a coconut-pecan frosting."},{"name": "Gulab Jamun","price": "20","itemid": "954","shortdescription": "Decorated with silver foil and almond chips."}]}]';
+
+var items = JSON.parse(dummy);
+
+
+
+
 
 server.listen(port);
-    console.log(ip+" : "+port);
+console.log(ip+" : "+port);
 app.get('/', function (req, res) {
 
 fs.readFile(__dirname + '/htmls/MainInterface.html',
@@ -65,7 +73,7 @@ app.get('/listings',function(req,res){
 console.log("Serving menu ...");
 res.writeHead(200,{'Content-type':'text/json'});
 
-res.end('[{"name":"Mango Juice","price":"15","itemid":"01","shortdescription":"Some stuffs about this."},{"name":"Oreo Shake","price":"40","itemid":"02","shortdescription":"Some stuffs about this."},{"name":"Avacado Shake","price":"55","itemid":"03","shortdescription":"Some stuffs about this."},{"name":"Blueberry Shake","price":"80","itemid":"05","shortdescription":"Some stuffs about this."},{"name":"Apple Juice","price":"25","itemid":"06","shortdescription":"Some stuffs about this."},{"name":"Orange Juice","price":"25","itemid":"07","shortdescription":"Some stuffs about this."}]');
+res.end(dummy);
 
 });
 
@@ -97,6 +105,7 @@ while(i!=users.length)
   console.log("Alloted socket : "+socket.id+" Total users : "+users.length);
 });
 socket.on('order',function(data){
+
 var ord = new Order();
 var jsondec = JSON.parse(data);
 

@@ -5,35 +5,69 @@ i-Menu : Main Interface
 </title>
   <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  body
-  {
-    font-family: 'Segoe UI Light', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  h1
-  {
-    text-align: center;
-  }
-  .navigationBar
-  {
-    margin: 1vw;
-    padding: 1vh;
-    background-color: cornflowerblue;
-  }
-  .orderBucket .order
-  {
-    padding: 3vh;
-    margin: 1vh;
-    background-color: steelblue;
-    border-radius: 1vh;
-      }
-      .orderBucket .order .statusSlot
-      {
-        position: relative;
-        right: 0;
-        top: 0;
-      }
-  </style>
+        <style>
+                    body
+                    {
+                      font-family: 'Segoe UI Light', Tahoma, Geneva, Verdana, sans-serif;
+                    }
+                    h1
+                    {
+                      text-align: center;
+                    }
+                    .orderBucket
+                    {
+                      width: 50%;
+                    }
+                    .navigationBar
+                    {
+                      margin: 1vw;
+                      padding: 1vh;
+                      background-color: cornflowerblue;
+                    }
+                    .orderBucket .order
+                    {
+                      padding: 1vh;
+                      margin: 1vh;
+                      background-color: steelblue;
+                      border-radius: 1vh;
+                        }
+                        .prop
+                        {
+                        }
+                        .orderBucket .order .statusSlot
+                        {
+                          position: relative;
+                          text-align: right;
+                          right: 0;
+                          top: 0;
+                        }
+                        .itemname
+                        {
+                            margin: 1em;
+                            font-size: 1.5em;
+                        }
+                        .counts
+                        {
+                            margin-right: 1em;
+                            font-size: 2em;
+                            text-align: right;
+
+                    
+
+                        }
+                        .tableno
+                        {
+                            font-size: 2em;
+                            margin-right: 1em;
+                            text-align: right;
+
+
+                        }
+                        select
+                        {
+                          font-size: 2em;
+                        }
+                    </style>
 
 </head>
 <body>
@@ -41,6 +75,14 @@ i-Menu : Main Interface
 <script>
   var socket = io('http://localhost:3000');
   socket.on('orderAck', function (data) {
+  var decoded = JSON.parse(data);
+   
+
+ var jsonformat = '{"orderid":"'+decoded.orderid+'","status":"wait","tableId":"'+decoded.tableid+'","itemid":"'+decoded.itemid+'","itemcount":"'+decoded.count+'" }';
+   
+
+ socket.emit("ackOrder",jsonformat);
+
     fillList(data);
   });
 
@@ -50,8 +92,38 @@ function fillList(datum)
 
 	var bucket = document.getElementById('orderBucket');
 	var tempDiv = document.createElement('div');
-  var tempStatus = document.createElement('span');
+  var prop = document.createElement("div");
+  var tempStatus = document.createElement('div');
+  var tabspan = document.createElement("span");
+  var countspan = document.createElement("span");
+  var countlab = document.createElement("span");
+  var tablab = document.createElement("span");
+  var itemlab = document.createElement("span");
+
+  
+
   tempStatus.setAttribute("class","statusSlot");
+  prop.setAttribute("class","prop");
+  itemlab.setAttribute("class","itemname");
+  countspan.setAttribute("class","counts");
+  tabspan.setAttribute("class","tableno");
+  tablab.innerHTML="Table ";
+  countlab.innerHTML="No. ";
+
+  countspan.innerHTML=decoded.count;
+  tabspan.innerHTML=decoded.tableid;
+  itemlab.innerHTML=decoded.itemname;
+
+
+
+prop.appendChild(itemlab);
+prop.appendChild(countlab);
+prop.appendChild(countspan);
+prop.appendChild(tablab);
+prop.appendChild(tabspan);
+
+
+  countspan.setAttribute("class","tableno");
   var selectStatus = document.createElement('select');
   selectStatus.setAttribute('id',decoded.tableid+'-status'+decoded.itemid);
   selectStatus.setAttribute('data-orderid',decoded.orderid);
@@ -65,10 +137,9 @@ selectStatus.setAttribute("onChange","selectSelect(this)");
 	tempStatus.appendChild(selectStatus);
 tempStatus.appendChild(selectStatus);
   tempDiv.setAttribute("class","order");
-  tempDiv.innerHTML=decoded.itemname;
     tempDiv.appendChild(tempStatus);
-
-  bucket.appendChild(tempDiv);
+    tempDiv.appendChild(prop);
+    bucket.appendChild(tempDiv);
 	
 }
 function selectSelect(ib)

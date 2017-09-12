@@ -6,34 +6,44 @@ var fs = require('fs');
 var ip = "127.0.0.1";
 var port = 3000;
 
-
 //Class Templates
 function user(socketid,tableid)
 {
   this.socketid = socketid;
   this.table = tableid;
 }
-function Order (itemid,itemname,count,tableid,orderid)
+function Order (itemid,itemname,count,tableid,orderid,price)
 {
 this.itemid = itemid;
 this.itemname = itemname;
 this.count = count;
 this.tableid = tableid;
 this.orderid=orderid;
+this.price=price;
 }
 
-//Array to store user sockets and tableid
-var users = new Array();
+function particulars(tableid,itemid,itemname,count,price)
+{
+this.tableid=tableid;
+this.itemid=itemid;
+this.itemname=itemname;
+this.count=count;
+this.price=price;
 
+}
+
+
+
+//Array to store user sockets and tableid
+
+var users = new Array();
+var conforders = new Array();
+var ordersplaced=new Array();
 
 //Items 
 var dummy = '[{"categorytitle": "Juices","items": [{"name": "Mango Juice","price": "15","itemid": "01","shortdescription": "Some stuffs about this."}, {"name": "Oreo Shake","price": "40","itemid": "02","shortdescription": "Some stuffs about this."}, {		"name": "Avacado Shake","price":"55","itemid": "03","shortdescription": "Some stuffs about this."}, {	"name": "Blueberry Shake","price": "80","itemid": "05","shortdescription": "Some stuffs about this."}, {"name": "Apple Juice","price": "25","itemid": "06","shortdescription": "Some stuffs about this."}, {"name": "Orange Juice","price": "25","itemid":"07","shortdescription": "Some stuffs about this."}]},{"categorytitle":"Meals","items":[{	"name": "Chicken Biriyani","price": "45","itemid": "079","shortdescription": "Delicious!"}]},{"categorytitle":"Desserts","items":[{"name": "Apple Pie","price": "40","itemid": "95","shortdescription": "Delicious!"},{"name": "Baked Alaska","price": "45","itemid": "495","shortdescription": "Ice-cream and cake topped with browned meringue."},{"name": "German Chocolate Cake","price": "40","itemid": "935","shortdescription": "A layered cake filled and topped with a coconut-pecan frosting."},{"name": "Gulab Jamun","price": "20","itemid": "954","shortdescription": "Decorated with silver foil and almond chips."}]}]';
 
 var items = JSON.parse(dummy);
-
-
-
-
 
 server.listen(port);
 console.log(ip+" : "+port);
@@ -77,6 +87,36 @@ res.end(dummy);
 
 });
 
+
+app.get('/bill',function(req,res){
+var tableid = req.query.tableid;
+var counter = 0;
+var filteredBill = new Array();
+
+console.log("Bill for "+tableid);
+while(counter<conforders.length)
+  {
+ console.log(conforders[counter].itemname+"->"+conforders[counter].count);
+      counter++;      
+      }
+
+
+
+  if(counter==0)
+    {
+      console.log("Table not found !");
+    }
+    else
+      {
+        console.log("Progress happenned")
+      }
+
+
+});
+
+
+
+
 io.on('connection', function (socket) {
 console.log("A client connected");
 
@@ -97,7 +137,6 @@ while(i!=users.length)
         break;
       }
               i++;
-
   }
     if(flag==0)
   users.push(new user(socket.id,data));
@@ -108,26 +147,57 @@ socket.on('order',function(data){
 
 var ord = new Order();
 var jsondec = JSON.parse(data);
+var ord = new Order(jsondec.itemid,jsondec.item,jsondec.count,jsondec.tableid,jsondec.orderid,jsondec.price);
 
-var ord = new Order(jsondec.itemid,jsondec.item,jsondec.count,jsondec.tableid,jsondec.orderid);
+ordersplaced.push(ord);
+
 var ih=(JSON.stringify(ord));
 socket.broadcast.emit('orderAck',ih);
 });
 socket.on('ackOrder',function(data){
   var decoded = JSON.parse(data);
+
   var i = 0;
+  var jab = 0;
+  console.log(decoded.status);
+if(decoded.status!="wait"&&decoded.status!="nill"&&decoded.status!="null")
+  {
+  while(decoded.itemid!=ordersplaced[jab].itemid)
+    {
+    jab++;
+    }
+var insertbol = 0;
+for(var i=0;i<conforders.length;i++)
+  {
+    if(decoded.itemid==conforders[i].itemid)
+      {
+insertbol=1;
+break;
+      }
+  }
+  if(insertbol==1)
+    {
+      conforders[i].count=parseInt(decoded.count)+parseInt(conforders[i].count);
+      console.log(conforders[i].count);
+    }
+    else
+      {
+        var temob=new particulars(decoded.tableId,decoded.itemid,ordersplaced[jab].itemname,decoded.itemcount,ordersplaced[jab].price);
+        conforders.push(temob);
+      }
+  }
+var i = 0;
   while(i!=decoded.length)
     {
-      if(users[i].table==decoded.tableId)
+
+      if(users[i].table==decoded.tableId&&users!=null)
         {
           socket.broadcast.to(users[i].socketid).emit('ackRec',data);
         }
         i++;
         break;
-    }
-
+    
+}
 });
-
-
 });
       

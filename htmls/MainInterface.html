@@ -78,7 +78,7 @@ i-Menu : Main Interface
   var decoded = JSON.parse(data);
    
 
- var jsonformat = '{"orderid":"'+decoded.orderid+'","status":"wait","tableId":"'+decoded.tableid+'","itemid":"'+decoded.itemid+'","itemcount":"'+decoded.count+'" }';
+ var jsonformat = '{"orderid":"'+decoded.orderid+'","status":"wait","tableId":"'+decoded.tableid+'","itemid":"'+decoded.itemid+'","itemcount":"'+decoded.count+'","price":"'+decoded.price+'" }';
    
 
  socket.emit("ackOrder",jsonformat);
@@ -130,13 +130,14 @@ prop.appendChild(tabspan);
     selectStatus.setAttribute('data-tableid',decoded.tableid);
     selectStatus.setAttribute('data-itemid',decoded.itemid);
     selectStatus.setAttribute('data-itemcount',decoded.count);
+    selectStatus.setAttribute('data-price',decoded.price);
 
   selectStatus.setAttribute("class","status");
 selectStatus.setAttribute("onChange","selectSelect(this)");
   selectStatus.innerHTML='<option value="null">Select Status</option><option value="now">Now</option><option value="5min">Prepared in 5 minutes</option><option value="10min">Prepared in 10 minutes</option><option value="nill">Order cannot be handled</option>';
 	tempStatus.appendChild(selectStatus);
 tempStatus.appendChild(selectStatus);
-  tempDiv.setAttribute("class","order");
+  tempDiv.setAttribute("class","ordeanu sithara hotr");
     tempDiv.appendChild(tempStatus);
     tempDiv.appendChild(prop);
     bucket.appendChild(tempDiv);
@@ -144,7 +145,7 @@ tempStatus.appendChild(selectStatus);
 }
 function selectSelect(ib)
 {
-    var jsonformat = '{ "orderid":"'+ib.dataset.orderid+'","status":"'+ib.value+'","tableId":"'+ib.dataset.tableid+'","itemid":"'+ib.dataset.itemid+'","itemcount":"'+ib.dataset.itemcount+'" }';
+    var jsonformat = '{ "orderid":"'+ib.dataset.orderid+'","status":"'+ib.value+'","tableId":"'+ib.dataset.tableid+'","itemid":"'+ib.dataset.itemid+'","itemcount":"'+ib.dataset.itemcount+'","price": "'+ib.dataset.price+'"}';
     socket.emit("ackOrder",jsonformat);
 
 }

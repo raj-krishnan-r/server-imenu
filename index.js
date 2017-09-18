@@ -31,9 +31,6 @@ this.count=count;
 this.price=price;
 
 }
-
-
-
 //Array to store user sockets and tableid
 
 var users = new Array();
@@ -152,14 +149,13 @@ var ord = new Order(jsondec.itemid,jsondec.item,jsondec.count,jsondec.tableid,js
 ordersplaced.push(ord);
 
 var ih=(JSON.stringify(ord));
+console.log(ih);
 socket.broadcast.emit('orderAck',ih);
 });
 socket.on('ackOrder',function(data){
   var decoded = JSON.parse(data);
-
   var i = 0;
   var jab = 0;
-  console.log(decoded.status);
 if(decoded.status!="wait"&&decoded.status!="nill"&&decoded.status!="null")
   {
   while(decoded.itemid!=ordersplaced[jab].itemid)

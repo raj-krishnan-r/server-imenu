@@ -1,10 +1,10 @@
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-  var qr = require('qr-image');
+var qr = require('qr-image');
+const url = require('url');
+  var mime = require('mime');
 var fs = require('fs');
-var ip = "127.0.0.1";
-var port = 3000;
 
 //Class Templates
 function user(socketid,tableid)
@@ -31,8 +31,24 @@ this.count=count;
 this.price=price;
 
 }
-//Array to store user sockets and tableid
 
+//Server Configuration reading..
+
+fs.readFile(__dirname + '/serverconf.json',function(err,data)
+{
+if(err)
+{
+  console.log("Can't load Server Configuration file");
+console.log(err);
+}
+else
+{
+var settings = JSON.parse(data);
+//Reading setttings
+var rootDirectory = settings.rootDirectory;
+var ip = settings.ipv4;
+var port = settings.port;
+//Array to store user sockets and tableid
 var users = new Array();
 var conforders = new Array();
 var ordersplaced=new Array();
@@ -44,72 +60,86 @@ var items = JSON.parse(dummy);
 
 server.listen(port);
 console.log(ip+" : "+port);
-app.get('/', function (req, res) {
 
-fs.readFile(__dirname + '/htmls/MainInterface.html',
+
+app.get('*', function (req, res) {
+  
+console.log(req.url);  
+
+var parameterStrippedURL = url.parse(req.url).pathname;
+if(parameterStrippedURL=="/")
+{
+  console.log(__dirname +rootDirectory+'/MainInterface.html');
+  fs.readFile(__dirname +rootDirectory+'/MainInterface.html',
   function (err, data) {
     if (err) {
       res.writeHead(500);
       return res.end('Error loading index.html');
     }
-
-    res.writeHead(200,{"content-type":"text/html"});
+    var contenttype = mime.lookup(__dirname +'/htmls/MainInterface.html');    
+    res.writeHead(200,{"content-type":contenttype});
+    console.log(res.getHeader("content-type"));
     res.end(data);
   });
+}
+else if(parameterStrippedURL=="/qr")
+{
+  var ssid = req.query.ssid;
+  var key = req.query.key;
+  var tableid = req.query.tableId;
+  var host = req.query.host;
+   
+  var qr_svg = qr.image('imenu,'+ssid+','+key+','+host+','+tableid, { type: 'svg' });
+  qr_svg.pipe(require('fs').createWriteStream('i_love_qr.svg'));
+   
+  var svg_string = qr.imageSync('imenu,'+ssid+','+key+','+host+','+tableid, { type: 'svg',size:'5' });
+  res.writeHead(200,{"content-type":"text/html"});
+  res.end(svg_string);
+}
+else if(parameterStrippedURL=="/listings")
+{
 
+    console.log("Serving menu ...");
+    res.writeHead(200,{'Content-type':'text/json'});
+    
+    res.end(dummy);
+}
+else
+{
+  fs.readFile(__dirname +"/htmls"+ req.url,
+  function (err, data) {
+    
+    if (err) {
+      console.log(err.code);    
 
-});
-
-app.get('/qr', function (req, res) {
-
-var ssid = req.query.ssid;
-var key = req.query.key;
-var tableid = req.query.tableId;
-var host = req.query.host;
- 
-var qr_svg = qr.image('imenu,'+ssid+','+key+','+host+','+tableid, { type: 'svg' });
-qr_svg.pipe(require('fs').createWriteStream('i_love_qr.svg'));
- 
-var svg_string = qr.imageSync('imenu,'+ssid+','+key+','+host+','+tableid, { type: 'svg',size:'5' });
-res.writeHead(200,{"content-type":"text/html"});
-res.end(svg_string);
-
-});
-
-app.get('/listings',function(req,res){
-console.log("Serving menu ...");
-res.writeHead(200,{'Content-type':'text/json'});
-
-res.end(dummy);
-
-});
-
-
-app.get('/bill',function(req,res){
-var tableid = req.query.tableid;
-var counter = 0;
-var filteredBill = new Array();
-
-console.log("Bill for "+tableid);
-while(counter<conforders.length)
-  {
- console.log(conforders[counter].itemname+"->"+conforders[counter].count);
-      counter++;      
-      }
-
-
-
-  if(counter==0)
-    {
-      console.log("Table not found !");
+      //Error Code analysis
+if(err.code=="ENOENT")
+{
+        var output = "Page / file not found !";
+        res.writeHead(404);
+        res.end(data);
+        
+}
+else if(err.code=="EISDIR")
+{
+  var output = "Directory listing is disabled by default";
+  res.writeHead(500);
+  res.end(data);
+}
     }
     else
-      {
-        console.log("Progress happenned")
-      }
+    {
 
+    var contenttype = mime.lookup(__dirname +rootDirectory+ req.url);    
+    res.writeHead(200,{"content-type":contenttype});
+    res.end(data);
+    }
+  });
+}
 
 });
+
+
 
 
 
@@ -197,3 +227,11 @@ var i = 0;
 });
 });
       
+
+}
+});
+
+
+
+
+

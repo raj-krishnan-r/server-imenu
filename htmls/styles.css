@@ -1,0 +1,90 @@
+
+body
+{
+    font-family: "Segoe UI Light",Arial, Helvetica, sans-serif;
+    
+}
+.logoTitle
+{
+
+background-color: #A10B0B;
+color:white;
+padding: .5em;
+font-size: 2em;
+margin-bottom: .4em;
+}
+.MenuPanel
+{
+    background-color: #171AAC;
+    color:white;
+    padding: 10px;
+    font-family: "Segoe UI Light",Arial, Helvetica, sans-serif;
+}
+.MenuPanel span
+{
+    padding: .5em;
+    margin: .2em;
+    background-color:rgba(219, 218, 233, 0.25);
+}
+.MenuPanel span:hover
+{
+    background-color:rgba(131, 106, 106, 0.80);
+    cursor: pointer;
+}
+.frameContainer
+{
+    height: 75vh;
+
+}
+
+.cat_title
+{
+    font-size: 1.5em;    padding: .2em;
+    background-color: #3E6383;
+    color: white;
+    text-align: center;
+}
+
+
+.cat_form
+{
+    background-color: rgba(8, 113, 194, 0.82);
+    padding: .5em;
+    text-align: center;
+
+}
+.item_title
+{
+    text-align: center;
+    padding: .5em;
+    font-size: .8em;
+
+}
+
+.item_form
+{
+    background-color: rgba(62, 100, 131, 0.29);
+    padding: .5em;
+    text-align: center;
+    
+}
+.itemForm
+{
+text-align: center;
+background-color: rgba(62, 100, 131, 0.29);
+display: none;
+
+}
+.formTable
+{
+    margin-left:30%;
+    text-align: right;
+}
+.subHeader
+{
+    color:grey;
+    margin: .2em;
+    font-size: 2em;
+    text-align: left;
+    opacity: .5;
+}

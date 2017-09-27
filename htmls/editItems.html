@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+</html>
+<head>
+    <link rel="stylesheet" href="styles.css"/>
+    <script src="ajax.js"></script>
+
+
+    <script>
+        
+    function getData()
+    {
+        $.getJSON("loadCategories",function(data){
+            
+            var jsndec = JSON.stringify(data);
+            jsndec=JSON.parse(jsndec);
+            var i=0;
+            while(i<jsndec.length)
+            {
+                var tempOp = document.createElement("option");
+                tempOp.setAttribute("id",jsndec[i].cat_id);
+                tempOp.setAttribute("value",jsndec[i].cat_id);
+
+                tempOp.innerHTML=jsndec[i].cat_title;
+                document.getElementById("categoryList").appendChild(tempOp);
+                i++;
+            }
+        });
+    }
+function saveButton(){
+var title = document.getElementById("ittitle").value;
+var price = document.getElementById("itprice").value;
+var ing = document.getElementById("itingdesc").value;
+var shrtdesc = document.getElementById("itshdesc").value;
+var lngdesc = document.getElementById("itlngdesc").value;
+var catid = document.getElementById("categoryList").value;
+/*Big validation */
+if(title==""||price==""||ing==""||shrtdesc==""||lngdesc=="")
+{
+    window.alert("Please fill in all fields.");
+}
+else
+{
+    $.post("createItem",{ptitle:title,pprice:price,ping:ing,pshrtdesc:shrtdesc,plngdes:lngdesc,pcatid:catid},function(data){
+        if(data==1)
+        {
+            window.alert("Item Saved.");
+        }
+
+    });
+}
+
+}
+    </script>
+</hrad>
+<body>
+    <div class="cat_title">Add Category / Items</div>
+    <div class="subHeader">Create Category</div>
+    <div class="cat_form">
+<label>Category Title : </label><input type="text" id="catTitle" name="catTitle"/><input placeholder="Category title" value="Add" type="button" onclick="catSubmit"/></div>
+</div>
+<div class="subHeader">Create Item</div>
+<div class="item_form">
+    <select onchange="displayCat()" id="categoryList">
+        <option value="nill" id="1">Select Category</option>
+        
+        
+    </select>
+    </div>
+<div id="itemfrm" class="itemForm">
+<table class="formTable" border="0">
+    <tr><td>Title</td><td>  <input type="text" id="ittitle"/>         </td></tr>
+    <tr><td>Price</td><td>    <input type="text" id="itprice"/>       </td></tr>
+    <tr>      <td>Short Description</td><td>  <textarea id="itshdesc"></textarea>         </td></tr>
+    <tr>          <td>Ingredients</td><td>   <textarea id="itingdesc"></textarea>        </td></tr>
+    <tr>         <td> Long Description</td><td><textarea id="itlngdesc"></textarea></td></tr>
+    <tr><td colspan="2"><button onclick="saveButton()">Save</button></td></tr>
+   
+    
+    </table>
+</div>
+
+
+
+</div>
+</body>
+<script>
+    getData();
+function displayCat()
+{
+document.getElementById("itemfrm").style.display="block";
+}
+</script>
+</html>
+

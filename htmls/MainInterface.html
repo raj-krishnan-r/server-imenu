@@ -6,91 +6,69 @@ i-Menu : Main Interface
   <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <style>
-                    body
-                    {
-                      font-family: 'Segoe UI Light', Tahoma, Geneva, Verdana, sans-serif;
-                    }
-                    h1
-                    {
-                      text-align: center;
-                    }
-                    .orderBucket
-                    {
-                      width: 50%;
-                    }
-                    .navigationBar
-                    {
-                      margin: 1vw;
-                      padding: 1vh;
-                      background-color: cornflowerblue;
-                    }
-                    .orderBucket .order
-                    {
-                      padding: 1vh;
-                      margin: 1vh;
-                      background-color: steelblue;
-                      border-radius: 1vh;
-                        }
-                        .prop
-                        {
-                        }
-                        .orderBucket .order .statusSlot
-                        {
-                          position: relative;
-                          text-align: right;
-                          right: 0;
-                          top: 0;
-                        }
-                        .itemname
-                        {
-                            margin: 1em;
-                            font-size: 1.5em;
-                        }
-                        .counts
-                        {
-                            margin-right: 1em;
-                            font-size: 2em;
-                            text-align: right;
-
-                    
-
-                        }
-                        .tableno
-                        {
-                            font-size: 2em;
-                            margin-right: 1em;
-                            text-align: right;
-
-
-                        }
-                        select
-                        {
-                          font-size: 2em;
-                        }
-                    </style>
+        <link rel="stylesheet" href="minterfacestyle.css"/>
 
 </head>
 <body>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+  //table list
+var tablelist = new Array();
   var socket = io('http://localhost:3000');
   socket.on('orderAck', function (data) {
   var decoded = JSON.parse(data);
-   
+   tableLoad(decoded.tableid);
 
  var jsonformat = '{"orderid":"'+decoded.orderid+'","status":"wait","tableId":"'+decoded.tableid+'","itemid":"'+decoded.itemid+'","itemcount":"'+decoded.count+'","price":"'+decoded.price+'" }';
    
 
  socket.emit("ackOrder",jsonformat);
 
-    fillList(data);
+    fillList(data,decoded.tableid);
   });
 
-function fillList(datum)
+function tableLoad(tableid)
 {
-  var decoded = JSON.parse(datum);
+  var i = 0,flag=0;
+  while(i<tablelist.length)
+  {
+    if(tablelist[i]==tableid)
+    {
+      flag=1;
+      break;
+    }
+    i++;
+  }
+  if(flag==1)
+  {
+  }
+  else
+  {
+    tablelist.push(tableid);    
+    var cell = document.createElement("div");
+    var grinder = document.createElement("div");
+    var orderspace = document.createElement("div");
+    orderspace.setAttribute("id","table-"+tableid);
+    orderspace.setAttribute("class","orderspace");
 
+
+    var title=document.createElement("span");
+    title.innerHTML="Table : "+tableid;
+    grinder.setAttribute("class","tabletopgrinder");
+    title.setAttribute("class","tableid");
+    grinder.appendChild(title);
+cell.appendChild(grinder);
+    cell.setAttribute("class","cell");
+    cell.appendChild(orderspace);
+    document.getElementById("tableCell").appendChild(cell);
+  }
+}
+
+function fillList(datum,tableid)
+{
+
+  var decoded = JSON.parse(datum);
+  var tablecells = document.getElementById('tableCell');
 	var bucket = document.getElementById('orderBucket');
 	var tempDiv = document.createElement('div');
   var prop = document.createElement("div");
@@ -100,62 +78,69 @@ function fillList(datum)
   var countlab = document.createElement("span");
   var tablab = document.createElement("span");
   var itemlab = document.createElement("span");
-
-  
-
   tempStatus.setAttribute("class","statusSlot");
   prop.setAttribute("class","prop");
   itemlab.setAttribute("class","itemname");
   countspan.setAttribute("class","counts");
   tabspan.setAttribute("class","tableno");
-  tablab.innerHTML="Table ";
+  //tablab.innerHTML="Table ";
   countlab.innerHTML="No. ";
-
   countspan.innerHTML=decoded.count;
-  tabspan.innerHTML=decoded.tableid;
+  //tabspan.innerHTML=decoded.tableid;
   itemlab.innerHTML=decoded.itemname;
-
-
-
 prop.appendChild(itemlab);
 prop.appendChild(countlab);
 prop.appendChild(countspan);
-prop.appendChild(tablab);
-prop.appendChild(tabspan);
+//prop.appendChild(tablab);
+//prop.appendChild(tabspan);
 
 
   countspan.setAttribute("class","tableno");
   var selectStatus = document.createElement('select');
   selectStatus.setAttribute('id',decoded.tableid+'-status'+decoded.itemid);
   selectStatus.setAttribute('data-orderid',decoded.orderid);
-    selectStatus.setAttribute('data-tableid',decoded.tableid);
-    selectStatus.setAttribute('data-itemid',decoded.itemid);
-    selectStatus.setAttribute('data-itemcount',decoded.count);
-    selectStatus.setAttribute('data-price',decoded.price);
+  selectStatus.setAttribute('data-tableid',decoded.tableid);
+  selectStatus.setAttribute('data-itemid',decoded.itemid);
+  selectStatus.setAttribute('data-itemcount',decoded.count);
+  selectStatus.setAttribute('data-price',decoded.price);
 
   selectStatus.setAttribute("class","status");
-selectStatus.setAttribute("onChange","selectSelect(this)");
+  selectStatus.setAttribute("onChange","selectSelect(this)");
   selectStatus.innerHTML='<option value="null">Select Status</option><option value="now">Now</option><option value="5min">Prepared in 5 minutes</option><option value="10min">Prepared in 10 minutes</option><option value="nill">Order cannot be handled</option>';
 	tempStatus.appendChild(selectStatus);
-tempStatus.appendChild(selectStatus);
-  tempDiv.setAttribute("class","ordeanu sithara hotr");
-    tempDiv.appendChild(tempStatus);
-    tempDiv.appendChild(prop);
-    bucket.appendChild(tempDiv);
+  tempStatus.appendChild(selectStatus);
+  tempDiv.setAttribute("class","order");
+  tempDiv.appendChild(tempStatus);
+  tempDiv.appendChild(prop);
+  document.getElementById("table-"+tableid).appendChild(tempDiv);
+
+//Scroll to bottom of div
+document.getElementById("table-"+tableid).scrollTop = elem.scrollHeight;
+
 	
 }
 function selectSelect(ib)
 {
+  console.log("Called");
     var jsonformat = '{ "orderid":"'+ib.dataset.orderid+'","status":"'+ib.value+'","tableId":"'+ib.dataset.tableid+'","itemid":"'+ib.dataset.itemid+'","itemcount":"'+ib.dataset.itemcount+'","price": "'+ib.dataset.price+'"}';
+    console.log(jsonformat);
     socket.emit("ackOrder",jsonformat);
 
 }
+
+
+
+
 </script>
 
 
 <h1>i-Menu</h1>
 
 <div class="navigationBar"><span>Order</span></div>
+
+<div id="tableCell" class="tableCells">
+
+</div>
 <div id = "orderBucket" class="orderBucket">
 
 </div>

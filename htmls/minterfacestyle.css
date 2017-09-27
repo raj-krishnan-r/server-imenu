@@ -1,0 +1,98 @@
+.tableCells
+{
+    width: 100%;
+    min-height: 40%;
+    background: violet;
+}
+.tableCells .cell{
+    float: left;
+    
+    background: #8a2be233;
+    margin: 1%;
+padding: 1em;
+height: 45vh;
+
+}
+
+.cell .tabletopgrinder
+{
+    background: grey;
+    padding:1vh; 
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.48);
+    vertical-align: middle;
+    color: white;
+}
+.tabletopgrinder .tableid
+{
+    font-size: 1em;
+}
+.cell .orderspace
+{
+    overflow-y: scroll;
+    height: 41vh;
+    
+}
+
+
+body
+{
+  font-family: 'Segoe UI Light', Tahoma, Geneva, Verdana, sans-serif;
+}
+h1
+{
+  text-align: center;
+}
+.orderBucket
+{
+  width: 50%;
+}
+.navigationBar
+{
+  margin: 1vw;
+  padding: 1vh;
+  background-color: cornflowerblue;
+}
+.order
+{
+  padding: 1vh;
+  margin: 1vh;
+  background-color: steelblue;
+  border-radius: 1vh;
+    }
+    .prop
+    {
+    }
+    .order .statusSlot
+    {
+      position: relative;
+      text-align: right;
+      right: 0;
+      top: 0;
+    }
+    .itemname
+    {
+        margin: 1em;
+        font-size: 1.0em;
+    }
+    .counts
+    {
+        margin-right: 1em;
+        font-size: 2em;
+        text-align: right;
+
+
+
+    }
+    .tableno
+    {
+        font-size: 2em;
+        margin-right: 1em;
+        text-align: right;
+        
+
+
+    }
+    select
+    {
+      font-size: 1.5em;
+    }

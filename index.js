@@ -5,6 +5,11 @@ var qr = require('qr-image');
 const url = require('url');
   var mime = require('mime');
 var fs = require('fs');
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended:true
+}));
 
 //Class Templates
 function user(socketid,tableid)
@@ -61,15 +66,49 @@ var items = JSON.parse(dummy);
 server.listen(port);
 console.log(ip+" : "+port);
 
+app.post("/createItem",function(req,res){
+  var title = (req.body.ptitle);
+  var shdesc = (req.body.pshrtdesc);
+  var lndes = (req.body.plngdes);
+  var price = req.body.pprice;
+  var catid = req.body.pcatid;
+  var ing = req.body.ping; 
+  var querystring = "insert into items values (0,'"+title+"','"+price+"','"+shdesc+"','"+ing+"','"+catid+"','"+lndes+"')";
 
+
+  var mysql = require('mysql');
+  var con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "123",
+    database: "imenu"
+  });
+
+
+  
+  con.connect(function(err) {
+    if (err) throw err;
+    con.query(querystring, function (err, result, fields) {
+      if (err) throw err;
+
+      res.writeHead(200,{'Content-type':'text/html'});
+      res.end("1");
+      
+     
+
+    });
+  });
+
+
+
+
+});
 app.get('*', function (req, res) {
   
-console.log(req.url);  
 
 var parameterStrippedURL = url.parse(req.url).pathname;
 if(parameterStrippedURL=="/")
 {
-  console.log(__dirname +rootDirectory+'/MainInterface.html');
   fs.readFile(__dirname +rootDirectory+'/MainInterface.html',
   function (err, data) {
     if (err) {
@@ -78,7 +117,6 @@ if(parameterStrippedURL=="/")
     }
     var contenttype = mime.lookup(__dirname +'/htmls/MainInterface.html');    
     res.writeHead(200,{"content-type":contenttype});
-    console.log(res.getHeader("content-type"));
     res.end(data);
   });
 }
@@ -99,10 +137,36 @@ else if(parameterStrippedURL=="/qr")
 else if(parameterStrippedURL=="/listings")
 {
 
-    console.log("Serving menu ...");
     res.writeHead(200,{'Content-type':'text/json'});
     
     res.end(dummy);
+}
+else if(parameterStrippedURL=="/loadCategories")
+{
+var reslt;
+var resultt = new Array();
+var mysql = require('mysql');
+  var con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "123",
+    database: "imenu"
+  });
+  
+  con.connect(function(err) {
+    if (err) throw err;
+    con.query("SELECT * FROM category", function (err, result, fields) {
+      if (err) throw err;
+
+      res.writeHead(200,{'Content-type':'text/json'});
+      res.end(JSON.stringify(result));
+      
+     
+
+    });
+  });
+
+
 }
 else
 {
@@ -141,9 +205,6 @@ else if(err.code=="EISDIR")
 
 
 
-
-
-
 io.on('connection', function (socket) {
 console.log("A client connected");
 
@@ -163,15 +224,15 @@ while(i!=users.length)
         flag=1;
         break;
       }
-              i++;
+  i++;
   }
     if(flag==0)
+    console.log("Table : "+data+" SocketId:"+socket.id);
   users.push(new user(socket.id,data));
 }
   console.log("Alloted socket : "+socket.id+" Total users : "+users.length);
 });
 socket.on('order',function(data){
-
 var ord = new Order();
 var jsondec = JSON.parse(data);
 var ord = new Order(jsondec.itemid,jsondec.item,jsondec.count,jsondec.tableid,jsondec.orderid,jsondec.price);
@@ -179,7 +240,6 @@ var ord = new Order(jsondec.itemid,jsondec.item,jsondec.count,jsondec.tableid,js
 ordersplaced.push(ord);
 
 var ih=(JSON.stringify(ord));
-console.log(ih);
 socket.broadcast.emit('orderAck',ih);
 });
 socket.on('ackOrder',function(data){
@@ -204,7 +264,6 @@ break;
   if(insertbol==1)
     {
       conforders[i].count=parseInt(decoded.count)+parseInt(conforders[i].count);
-      console.log(conforders[i].count);
     }
     else
       {
@@ -213,25 +272,19 @@ break;
       }
   }
 var i = 0;
-  while(i!=decoded.length)
+  while(i<users.length)
     {
-
       if(users[i].table==decoded.tableId&&users!=null)
         {
           socket.broadcast.to(users[i].socketid).emit('ackRec',data);
         }
         i++;
-        break;
     
 }
+
 });
 });
       
 
 }
 });
-
-
-
-
-

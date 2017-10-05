@@ -12,7 +12,7 @@
   },
   "author": "raj krishnan r",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodejs index.js"
   },
   "main": "index.js"
 }

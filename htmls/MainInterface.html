@@ -16,6 +16,7 @@ i-Menu : Main Interface
 var tablelist = new Array();
   var socket = io('http://localhost:3000');
   socket.on('orderAck', function (data) {
+    console.log("HeyMan");
   var decoded = JSON.parse(data);
    tableLoad(decoded.tableid);
 

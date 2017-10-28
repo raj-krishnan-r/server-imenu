@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            body
+            {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+        .midbanner
+        {
+            position: absolute;
+        }
+        .internalTable
+        {
+            text-align: center;
+        }
+  .mainTable td
+  {
+  }
+  .mainTable table
+  {
+      width: 50%;
+  }
+    .mainTable td:hover
+    {
+background: rgba(105, 90, 205, 0.377);
+cursor: pointer;
+    }
+        </style>
+    </head>
+    <body>
+        <div id = "thestuff" class="midbanner">
+            <table class="mainTable"><tr><td></td><td><table  onclick = "goTo('editItems.html');"  class="internalTable"><tr><td><img src = "icons/add.png"></td></tr><tr><td>  Item / Category</td></tr></table></td>
+        
+            <td><table  onclick = "goTo('altermenu.html');" class="internalTable"><tr><td><img src = "icons/edit.png"></td></tr><tr><td>  Edit Menu</td></tr></table></td>
+        
+        
+        
+        </tr></table>
+        </div>
+    </body>
+    <script>
+
+        function placeMiddle(objectid)
+        {
+            var objct = document.getElementById(objectid);
+            console.log(objct);
+var dim = objct.getBoundingClientRect();
+var scW = window.innerWidth;
+
+var scH = window.innerWidth;
+
+objct.style.left =(scW/2.6)-(dim.width/2.6)+"px";
+objct.style.top = (scH/6)-(dim.height/2)+"px";
+console.log(scH/2);
+console.log((dim.height/2));
+console.log((scH/2)-(dim.height/2)+"px");
+        }
+        placeMiddle("thestuff");
+        function goTo(url)
+        {
+            window.location=url;
+        }
+    
+    </script>
+</html>

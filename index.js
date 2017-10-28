@@ -4,8 +4,14 @@ var io = require('socket.io')(server);
 var qr = require('qr-image');
 const url = require('url');
   var mime = require('mime');
+  var mysql = require('mysql');
+  
 var fs = require('fs');
 var bodyParser = require('body-parser');
+
+//Global Declarations
+var itemslist = new Array(); 
+//
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended:true
@@ -35,6 +41,35 @@ this.itemname=itemname;
 this.count=count;
 this.price=price;
 
+}
+//class of 
+function menu(categorytitle)
+{
+  this.categorytitle=categorytitle;
+  this.items=new Array();
+}
+function item(name,price,itemid,shortdescription,longdescription)
+{
+  this.name=name;
+  this.price=price;
+  this.itemid=itemid;
+  this.shortdescription=shortdescription;
+  this.longdescription=longdescription;
+}
+
+function checkExistence(it)
+{
+  var i=0;
+  while(i<itemslist.length)
+  {
+    if(itemslist[i].categorytitle==it)
+    {
+      
+      return i;
+    }
+    i++;
+  }
+  return -1;
 }
 
 //Server Configuration reading..
@@ -76,11 +111,10 @@ app.post("/createItem",function(req,res){
   var querystring = "insert into items values (0,'"+title+"','"+price+"','"+shdesc+"','"+ing+"','"+catid+"','"+lndes+"')";
 
 
-  var mysql = require('mysql');
   var con = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "123",
+    password: "dbase001",
     database: "imenu"
   });
 
@@ -133,13 +167,100 @@ else if(parameterStrippedURL=="/qr")
   var svg_string = qr.imageSync('imenu,'+ssid+','+key+','+host+','+tableid, { type: 'svg',size:'5' });
   res.writeHead(200,{"content-type":"text/html"});
   res.end(svg_string);
-}
+}/*
 else if(parameterStrippedURL=="/listings")
 {
 
     res.writeHead(200,{'Content-type':'text/json'});
     
     res.end(dummy);
+}*/
+else if(parameterStrippedURL=="/listings")
+{
+
+  var reslt;
+  var resultt = new Array();
+  var mysql = require('mysql');
+    var con = mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: "dbase001",
+      database: "imenu"
+    });
+    
+    con.connect(function(err) {
+      if (err) throw err;
+      con.query("select category.cat_title,items.* from category,items where items.cat_id in (select cat_id from category) and category.cat_id = items.cat_id;", function (err, result, fields) {
+        if (err) throw err;  
+     
+       var i = 0;
+       while(result.length>i)
+       {
+        var ob = result[i];
+        
+        if(checkExistence(ob.cat_title)>-1)
+         
+         {
+        
+          var itob = new item(ob.title,ob.price,ob.item_id,ob.description,ob.longdescription);
+
+          itemslist[checkExistence(result[i].cat_title)].items.push(itob);
+         }
+         else
+         {
+           var men = new menu(ob.cat_title);
+           var po = new item(ob.title,ob.price,ob.item_id,ob.description,ob.longdescription);
+           men.items.push(po);
+           itemslist.push(men);
+         }
+
+
+
+
+        i++; 
+
+        //Nested loop is not ran, since it is creating problems, since the queries are excuted async.
+
+       }
+       
+  //console.log(itemslist);
+  res.writeHead(200,{'Content-type':'text/json'});
+  res.end(JSON.stringify((itemslist)));
+  itemslist=new Array();
+      });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 else if(parameterStrippedURL=="/loadCategories")
 {
@@ -149,7 +270,7 @@ var mysql = require('mysql');
   var con = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "123",
+    password: "dbase001",
     database: "imenu"
   });
   
@@ -174,7 +295,7 @@ else
   function (err, data) {
     
     if (err) {
-      console.log(err.code);    
+//      console.log(err.code);    
 
       //Error Code analysis
 if(err.code=="ENOENT")

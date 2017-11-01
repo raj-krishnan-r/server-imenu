@@ -161,12 +161,17 @@ else if(parameterStrippedURL=="/qr")
   var tableid = req.query.tableId;
   var host = req.query.host;
    
-  var qr_svg = qr.image('imenu,'+ssid+','+key+','+host+','+tableid, { type: 'svg' });
-  qr_svg.pipe(require('fs').createWriteStream('i_love_qr.svg'));
+  //var qr_svg = qr.image('imenu,'+ssid+','+key+','+host+','+tableid, { type: 'svg' });
+  //qr_svg.pipe(require('fs').createWriteStream('i_love_qr.svg'));
    
   var svg_string = qr.imageSync('imenu,'+ssid+','+key+','+host+','+tableid, { type: 'svg',size:'5' });
   res.writeHead(200,{"content-type":"text/html"});
-  res.end(svg_string);
+  var resultas = tableid+"$"+svg_string;
+  
+  res.end(resultas);
+  
+
+//res.end("[{tableid:"+tableid+",svg:'"+svg_string+"'}]");
 }/*
 else if(parameterStrippedURL=="/listings")
 {

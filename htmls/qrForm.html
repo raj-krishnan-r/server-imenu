@@ -3,15 +3,45 @@
     <head>
         <script src="ajax.js">
         </script>
+        <script src="jQuery.print.js"></script>
         <style>
+            .qrBox
+            {
+                width:90%;
+                margin: 5%;
+            }
+            .qrSlot
+            {
+                float: left;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 1em;
+            }
         .wd
         {
-            width:20vw;
-            height:20vh;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="155" height="155" viewBox="0 0 31 31"><path d="M1 1h7v7h-7zM9 1h4v1h-2v1h1v1h1v-1h1v-1h1v-1h1v2h-1v2h-3v1h3v1h-1v1h-1v-1h-1v2h-1v1h-1v-1h-1v-2h1v1h1v-1h-1v-1h1v-2h-1v-1h-1zM20 1h1v1h-1zM23 1h7v7h-7zM2 2v5h5v-5zM18 2h2v1h1v-1h1v8h-1v1h-1v1h-2v-4h1v2h1v-2h1v-1h-1v1h-1v-1h-1v-3h1v-1h-1zM24 2v5h5v-5zM3 3h3v3h-3zM16 3h1v1h-1zM25 3h3v3h-3zM9 4h1v1h-1zM20 4v1h1v-1zM16 5h1v1h-1zM15 7h1v1h1v1h-2zM17 7h1v1h-1zM1 9h1v2h1v1h1v1h-1v1h-1v1h2v-2h2v1h1v1h-2v1h-2v1h-1v1h-1zM3 9h2v1h1v-1h3v1h-2v1h-3v-1h-1zM12 9h1v1h-1zM23 9h1v1h2v-1h1v1h1v-1h2v2h-1v1h1v1h-2v-2h-3v3h-1v-1h-2v-1h-1v-1h1v-1h1zM13 10h1v1h1v-1h1v3h-1v1h1v-1h4v1h1v-1h1v1h2v1h2v3h-1v-2h-1v1h-2v-1h1v-1h-1v1h-2v-1h-2v-1h-1v1h-1v1h-2v-2h-1zM7 11h2v4h-1v-1h-1v-1h1v-1h-1zM11 11h1v1h-1zM23 11v1h1v-1zM10 12h1v1h-1zM26 13h2v2h-2zM11 14h1v1h1v1h-1v1h-1v-1h-1v1h1v1h-1v2h-1v-1h-1v-1h-1v-1h2v-2h2zM29 14h1v2h-2v-1h1zM7 15h1v1h-1zM17 15h1v2h-1zM6 16h1v1h-1zM3 17h2v1h-2zM12 17h1v1h1v-1h3v1h3v2h2v1h2v-1h-1v-1h1v-1h1v1h1v1h-1v1h1v-1h3v1h-2v2h-1v4h-1v3h-1v-4h-1v4h-3v-1h1v-1h1v-1h-1v1h-1v1h-1v-1h-1v-1h2v-1h1v-2h-1v-2h1v-1h-2v1h-1v-2h1v-1h-2v1h-1v1h-1v-2h-1v1h-2zM28 17h2v1h-2zM2 18h1v1h-1zM5 18h2v1h-1v1h-1zM27 18h1v1h-1zM1 19h1v1h-1zM3 19h1v1h-1zM7 19h1v1h-1zM6 20h1v1h1v1h-2zM8 20h1v1h-1zM10 20h1v1h3v1h-1v1h-1v1h-1v-1h-1v2h-1v-3h1zM2 21h1v1h-1zM4 21h1v1h-1zM16 21h1v1h-1zM15 22h1v1h-1zM22 22v3h3v-3zM28 22h2v1h-1v1h-2v-1h1zM1 23h7v7h-7zM23 23h1v1h-1zM2 24v5h5v-5zM12 24h1v3h1v3h-5v-1h4v-1h-1v-2h-1v1h-1v1h-1v-2h1v-1h2zM14 24h3v1h3v1h-3v1h-1v1h-1v-1h-1v-1h2v-1h-2zM3 25h3v3h-3zM27 25h3v3h-1v-2h-2zM16 28h1v1h-1zM26 28h1v2h-1zM28 28h1v2h-1zM17 29h1v1h-1z"/></svg>');
+            width:15vw;
+            height:15vh;
             background-repeat: no-repeat;
             background-size: contain;
         }
+        .opprint
+        {
+            background-image: url(icons/print.png);
+            width: 2em;
+            height: 2em;
+            background-size: cover;
+            float: right;
+        }
+        .opprint:hover
+        {
+            cursor: pointer;
+            border: 3px;
+        }
+        @media print
+{
+.container * { visibility: hidden; 
+display: none;}
+.qrContainer * { visibility: visible; }
+}
         </style>
     </head>
     <body>
@@ -42,9 +72,8 @@
         else
         {
             var url="/qr?ssid="+ssid+"&key="+key+"&host="+ip+"&tableId="+notables+"";
-            document.getElementById("eid").src=url;
 
-        }
+        
     if(document.getElementById("rad1").checked)
     {
         mode=true;
@@ -52,41 +81,72 @@
     }    
     if(mode)
     {
-        var url="/qtableIdr?ssid="+ssid+"&key="+key+"&host="+ip+"&="+notables+"";
+        var url="/qr?ssid="+ssid+"&key="+key+"&host="+ip+"&tableId="+notables+"";
         $.get(url,function(data){
-
-        var temp=document.createElement("div");
-        temp.innerHTML=notables;
-
-
+            var ede = data.split("$");
+            var filter = window.btoa(ede[1]); 
+            filter="data:image/svg+xml;base64,"+filter;
+            //document.write(filter);
+            var tmp = document.createElement("div");
+            tmp.setAttribute("class","qrSlot");
+            tmp.innerHTML=ede[0];
+            var innerdiv = document.createElement("div");
+            innerdiv.setAttribute("class","wd");
+            innerdiv.style.backgroundImage="url("+filter+")";
+            tmp.appendChild(innerdiv);
+            document.getElementById("qrContainer").appendChild(tmp);
         });
 
     }
+    else
+    {
+        if(!(parseInt(notables)%10==0))
+        {
+            alert("Table no. must be a multiple of 10");
+            return;
+        }
+        document.getElementById("qrContainer").innerHTML="";   
+        for(var i =1;i<=notables;i++)
+        {
+            var url="/qr?ssid="+ssid+"&key="+key+"&host="+ip+"&tableId="+i+"";
+            console.log(url);
+            $.get(url,function(data){
+
+            var ede = data.split("$");
+            var filter = window.btoa(ede[1]);
+            
+            //filter = filter.replace("\\", "");
+            filter="data:image/svg+xml;base64,"+filter;
+            //document.write(filter);
+            var tmp = document.createElement("div");
+            tmp.setAttribute("class","qrSlot");
+            tmp.innerHTML=ede[0];
+            var innerdiv = document.createElement("div");
+            innerdiv.setAttribute("class","wd");
+            innerdiv.style.color="blue";
+            innerdiv.style.backgroundImage="url("+filter+")";
+            tmp.appendChild(innerdiv);
+            document.getElementById("qrContainer").appendChild(tmp);
+        });  
+        }
+    }
+}
         //window.alert(ssid);
     }
-</script>
+    function printQr()
+    {
 
+        $("qrContainer").print();
+
+    }
+</script>
+<div class="qrBox">
+    <div><div onclick="printQr()" class="opprint"></div></div>
 <div id="qrContainer">
 
 
 </div>
-
-
-
-
-<div>
-    1
-<div class="wd"></div>
 </div>
-<div>
-        2
-    <div class="wd"></div>
-    </div>
-    <div>
-            3
-        <div class="wd"></div>
-        </div>
-            
-<embed id="eid"src="" type="image/svg+xml"width="500px" height="800px">
+
     </body>
 </html>
